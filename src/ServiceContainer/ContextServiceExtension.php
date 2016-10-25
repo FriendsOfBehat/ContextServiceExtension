@@ -11,13 +11,20 @@
 
 namespace FriendsOfBehat\ContextServiceExtension\ServiceContainer;
 
+use Behat\Testwork\Environment\ServiceContainer\EnvironmentExtension;
 use Behat\Testwork\ServiceContainer\Extension;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use FriendsOfBehat\ContextServiceExtension\Context\ContextRegistry;
+use FriendsOfBehat\ContextServiceExtension\Context\Environment\Handler\ContextServiceEnvironmentHandler;
+use FriendsOfBehat\ContextServiceExtension\ServiceContainer\Scenario\ContainerFactory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * @internal
+ */
 final class ContextServiceExtension implements Extension
 {
     /**
@@ -41,7 +48,12 @@ final class ContextServiceExtension implements Extension
      */
     public function configure(ArrayNodeDefinition $builder)
     {
-
+        $builder
+            ->children()
+                ->arrayNode('imports')
+                    ->performNoDeepMerging()
+                    ->prototype('scalar')
+        ;
     }
 
     /**
@@ -50,6 +62,8 @@ final class ContextServiceExtension implements Extension
     public function load(ContainerBuilder $container, array $config)
     {
         $this->loadContextRegistry($container);
+        $this->loadScenarioServiceContainer($container, $config);
+        $this->loadEnvironmentHandler($container);
     }
 
     /**
@@ -65,6 +79,33 @@ final class ContextServiceExtension implements Extension
      */
     private function loadContextRegistry(ContainerBuilder $container)
     {
-        $container->setDefinition('fob_context_service.context_registry', new Definition(ContextRegistry::class));
+        $container->setDefinition('fob_context_service.context_registry', (new Definition(ContextRegistry::class))->setPublic(false));
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array $config
+     */
+    private function loadScenarioServiceContainer(ContainerBuilder $container, array $config)
+    {
+        $container->set('fob_context_service.service_container.scenario', (new ContainerFactory())->createContainer(
+            $container->getParameter('paths.base'),
+            $container->getDefinition('fob_context_service.context_registry'),
+            $config['imports']
+        ));
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function loadEnvironmentHandler(ContainerBuilder $container)
+    {
+        $definition = new Definition(ContextServiceEnvironmentHandler::class, [
+            new Reference('fob_context_service.service_container.scenario'),
+            new Reference('fob_context_service.context_registry'),
+        ]);
+        $definition->addTag(EnvironmentExtension::HANDLER_TAG, ['priority' => 128]);
+
+        $container->setDefinition('fob_context_service.environment_handler.context_service', $definition);
     }
 }
