@@ -1,0 +1,4 @@
+suites:
+    main:
+        namespace: FriendsOfBehat\ContextServiceExtension
+        psr4_prefix: FriendsOfBehat\ContextServiceExtension

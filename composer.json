@@ -15,7 +15,8 @@
         "behat/behat": "^3.1"
     },
     "require-dev": {
-        "friends-of-behat/test-context": "^0.2.0"
+        "friends-of-behat/test-context": "^0.2.0",
+        "phpspec/phpspec": "^3.1"
     },
     "autoload": {
         "psr-4": { "FriendsOfBehat\\ContextServiceExtension\\": "src/" }
