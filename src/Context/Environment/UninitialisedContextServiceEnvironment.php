@@ -22,7 +22,7 @@ use FriendsOfBehat\ContextServiceExtension\Context\Environment\Handler\ContextSe
 final class UninitialisedContextServiceEnvironment extends StaticEnvironment implements ContextServiceEnvironment
 {
     /**
-     * @var string[]
+     * @var array
      */
     private $contextServices = [];
 
@@ -36,7 +36,7 @@ final class UninitialisedContextServiceEnvironment extends StaticEnvironment imp
     }
 
     /**
-     * @return array[]
+     * @return array
      */
     public function getContextServices()
     {
@@ -64,6 +64,6 @@ final class UninitialisedContextServiceEnvironment extends StaticEnvironment imp
      */
     public function hasContextClass($class)
     {
-        return array_search($class, $this->contextServices, true);
+        return in_array($class, $this->contextServices, true);
     }
 }
