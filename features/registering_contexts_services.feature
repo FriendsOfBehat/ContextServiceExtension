@@ -85,3 +85,20 @@ Feature: Registering contexts services
         """
         When I run Behat
         Then it should pass
+
+    Scenario: New context service instance is used for each scenario
+        Given a feature file "features/registering_context_service.feature" containing:
+        """
+        Feature: Registering context service
+
+            Scenario:
+                Given the parameter was injected to the context
+                When I change it to "shit does not happen"
+                Then it should contain "shit does not happen"
+
+            Scenario:
+                Given the parameter was injected to the context
+                Then it should contain "shit happens"
+        """
+        When I run Behat
+        Then it should pass
