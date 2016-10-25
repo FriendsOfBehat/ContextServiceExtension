@@ -12,10 +12,12 @@
 namespace FriendsOfBehat\ContextServiceExtension\ServiceContainer;
 
 use Behat\Testwork\Environment\ServiceContainer\EnvironmentExtension;
+use Behat\Testwork\EventDispatcher\ServiceContainer\EventDispatcherExtension;
 use Behat\Testwork\ServiceContainer\Extension;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use FriendsOfBehat\ContextServiceExtension\Context\ContextRegistry;
 use FriendsOfBehat\ContextServiceExtension\Context\Environment\Handler\ContextServiceEnvironmentHandler;
+use FriendsOfBehat\ContextServiceExtension\Listener\ScenarioContainerResetter;
 use FriendsOfBehat\ContextServiceExtension\ServiceContainer\Scenario\ContainerFactory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -93,6 +95,12 @@ final class ContextServiceExtension implements Extension
             $container->getDefinition('fob_context_service.context_registry'),
             $config['imports']
         ));
+
+        $definition = new Definition(ScenarioContainerResetter::class, [
+            new Reference('fob_context_service.service_container.scenario'),
+        ]);
+        $definition->addTag(EventDispatcherExtension::SUBSCRIBER_TAG);
+        $container->setDefinition('fob_context_service.service_container.scenario.resetter', $definition);
     }
 
     /**
