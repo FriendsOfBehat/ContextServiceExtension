@@ -16,7 +16,9 @@ Allows to declare and use contexts services in scenario scoped container.
     default:
         # ...
         extensions:
-            FriendsOfBehat\ContextServiceExtension: ~ # TODO!
+            FriendsOfBehat\ContextServiceExtension:
+               imports:
+                   - "features/bootstrap/config/services.xml"
+                   - "features/bootstrap/config/services.yml"
+                   - "features/bootstrap/config/services.php"   
     ```
-
-3. Every suite you create will have those settings as the default ones.
