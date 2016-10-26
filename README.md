@@ -49,7 +49,6 @@ Allows to declare and use contexts services in scenario scoped container.
     
     ```php
     // features/bootstrap/config/services.php
- 
     use Symfony\Component\DependencyInjection\Definition;
     
     $definition = new Definition(\Acme\MyContext::class);
