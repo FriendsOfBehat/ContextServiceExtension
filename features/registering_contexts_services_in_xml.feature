@@ -1,4 +1,7 @@
-Feature: Registering contexts services
+Feature: Registering contexts services in XML
+    In order to allow my contexts to be created using Symfony DI
+    As a Behat Developer
+    I want to be able to define them as services
 
     Background:
         Given a context file "features/bootstrap/FeatureContext.php" containing:
