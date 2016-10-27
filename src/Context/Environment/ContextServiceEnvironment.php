@@ -19,5 +19,4 @@ use FriendsOfBehat\ContextServiceExtension\Context\Environment\Handler\ContextSe
  */
 interface ContextServiceEnvironment extends ContextEnvironment
 {
-
 }

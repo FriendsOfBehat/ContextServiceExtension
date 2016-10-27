@@ -42,7 +42,6 @@ final class ContextServiceExtension implements Extension
      */
     public function initialize(ExtensionManager $extensionManager)
     {
-
     }
 
     /**
@@ -73,7 +72,6 @@ final class ContextServiceExtension implements Extension
      */
     public function process(ContainerBuilder $container)
     {
-
     }
 
     /**
