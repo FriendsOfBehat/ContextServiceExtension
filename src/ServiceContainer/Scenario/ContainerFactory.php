@@ -26,12 +26,11 @@ final class ContainerFactory
 {
     /**
      * @param string $basePath
-     * @param Definition $contextRegistryDefinition
      * @param array $importedFiles
      *
-     * @return ContainerInterface
+     * @return ContainerBuilder
      */
-    public function createContainer($basePath, Definition $contextRegistryDefinition, array $importedFiles = [])
+    public function createContainer($basePath, array $importedFiles = [])
     {
         $container = new ContainerBuilder();
 
@@ -39,9 +38,6 @@ final class ContainerFactory
         foreach ($importedFiles as $file) {
             $loader->load($file);
         }
-
-        $container->addCompilerPass(new ContextRegistryPass($contextRegistryDefinition));
-        $container->compile();
 
         return $container;
     }
