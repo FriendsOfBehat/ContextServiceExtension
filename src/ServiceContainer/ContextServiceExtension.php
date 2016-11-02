@@ -75,6 +75,13 @@ final class ContextServiceExtension implements Extension
     public function process(ContainerBuilder $container)
     {
         $scenarioContainer = $container->get('fob_context_service.service_container.scenario');
+
+        if ($container->hasExtension('fob_cross_container')) {
+            /** @var CrossContainerExtension $extension */
+            $extension = $container->getExtension('fob_cross_container');
+            $extension->getCrossContainerProcessor()->process($scenarioContainer);
+        }
+
         $scenarioContainer->addCompilerPass(new ContextRegistryPass($container->getDefinition('fob_context_service.context_registry')));
         $scenarioContainer->compile();
     }
