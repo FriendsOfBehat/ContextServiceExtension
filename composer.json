@@ -16,8 +16,12 @@
         "symfony/dependency-injection": "^2.8|^3.0"
     },
     "require-dev": {
-        "friends-of-behat/test-context": "^0.2.0",
+        "friends-of-behat/test-context": "^0.3",
+        "friends-of-behat/cross-container-extension": "^0.1.3",
         "phpspec/phpspec": "^3.1"
+    },
+    "suggest": {
+        "friends-of-behat/cross-container-extension": "^0.1"
     },
     "autoload": {
         "psr-4": { "FriendsOfBehat\\ContextServiceExtension\\": "src/" }
