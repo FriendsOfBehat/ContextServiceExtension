@@ -20,6 +20,7 @@ use FriendsOfBehat\ContextServiceExtension\Context\Environment\Handler\ContextSe
 use FriendsOfBehat\ContextServiceExtension\Listener\ScenarioContainerResetter;
 use FriendsOfBehat\ContextServiceExtension\ServiceContainer\Scenario\ContainerFactory;
 use FriendsOfBehat\ContextServiceExtension\ServiceContainer\Scenario\ContextRegistryPass;
+use FriendsOfBehat\CrossContainerExtension\CrossContainerProcessor;
 use FriendsOfBehat\CrossContainerExtension\ServiceContainer\CrossContainerExtension;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -31,6 +32,11 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 final class ContextServiceExtension implements Extension
 {
+    /**
+     * @var CrossContainerProcessor|null
+     */
+    private $crossContainerProcessor;
+
     /**
      * {@inheritdoc}
      */
@@ -44,6 +50,11 @@ final class ContextServiceExtension implements Extension
      */
     public function initialize(ExtensionManager $extensionManager)
     {
+        /** @var CrossContainerExtension|null $crossContainerExtension */
+        $crossContainerExtension = $extensionManager->getExtension('fob_cross_container');
+        if (null !== $crossContainerExtension) {
+            $this->crossContainerProcessor = $crossContainerExtension->getCrossContainerProcessor();
+        }
     }
 
     /**
@@ -74,12 +85,11 @@ final class ContextServiceExtension implements Extension
      */
     public function process(ContainerBuilder $container)
     {
+        /** @var ContainerBuilder $scenarioContainer */
         $scenarioContainer = $container->get('fob_context_service.service_container.scenario');
 
-        if ($container->hasExtension('fob_cross_container')) {
-            /** @var CrossContainerExtension $extension */
-            $extension = $container->getExtension('fob_cross_container');
-            $extension->getCrossContainerProcessor()->process($scenarioContainer);
+        if (null !== $this->crossContainerProcessor) {
+            $this->crossContainerProcessor->process($scenarioContainer);
         }
 
         $scenarioContainer->addCompilerPass(new ContextRegistryPass($container->getDefinition('fob_context_service.context_registry')));
