@@ -19,6 +19,9 @@ use FriendsOfBehat\ContextServiceExtension\Context\ContextRegistry;
 use FriendsOfBehat\ContextServiceExtension\Context\Environment\Handler\ContextServiceEnvironmentHandler;
 use FriendsOfBehat\ContextServiceExtension\Listener\ScenarioContainerResetter;
 use FriendsOfBehat\ContextServiceExtension\ServiceContainer\Scenario\ContainerFactory;
+use FriendsOfBehat\ContextServiceExtension\ServiceContainer\Scenario\ContextRegistryPass;
+use FriendsOfBehat\CrossContainerExtension\CrossContainerProcessor;
+use FriendsOfBehat\CrossContainerExtension\ServiceContainer\CrossContainerExtension;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -29,6 +32,11 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 final class ContextServiceExtension implements Extension
 {
+    /**
+     * @var CrossContainerProcessor|null
+     */
+    private $crossContainerProcessor;
+
     /**
      * {@inheritdoc}
      */
@@ -42,6 +50,11 @@ final class ContextServiceExtension implements Extension
      */
     public function initialize(ExtensionManager $extensionManager)
     {
+        /** @var CrossContainerExtension|null $crossContainerExtension */
+        $crossContainerExtension = $extensionManager->getExtension('fob_cross_container');
+        if (null !== $crossContainerExtension) {
+            $this->crossContainerProcessor = $crossContainerExtension->getCrossContainerProcessor();
+        }
     }
 
     /**
@@ -72,6 +85,15 @@ final class ContextServiceExtension implements Extension
      */
     public function process(ContainerBuilder $container)
     {
+        /** @var ContainerBuilder $scenarioContainer */
+        $scenarioContainer = $container->get('fob_context_service.service_container.scenario');
+
+        if (null !== $this->crossContainerProcessor) {
+            $this->crossContainerProcessor->process($scenarioContainer);
+        }
+
+        $scenarioContainer->addCompilerPass(new ContextRegistryPass($container->getDefinition('fob_context_service.context_registry')));
+        $scenarioContainer->compile();
     }
 
     /**
@@ -88,11 +110,11 @@ final class ContextServiceExtension implements Extension
      */
     private function loadScenarioServiceContainer(ContainerBuilder $container, array $config)
     {
-        $container->set('fob_context_service.service_container.scenario', (new ContainerFactory())->createContainer(
-            $container->getParameter('paths.base'),
-            $container->getDefinition('fob_context_service.context_registry'),
-            $config['imports']
-        ));
+        $container->set(
+            'fob_context_service.service_container.scenario',
+            (new ContainerFactory())->createContainer($container->getParameter('paths.base'), $config['imports'])
+        );
+
 
         $definition = new Definition(ScenarioContainerResetter::class, [
             new Reference('fob_context_service.service_container.scenario'),
