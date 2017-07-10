@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^5.6|^7.0",
+        "php": "^7.1",
 
         "behat/behat": "^3.1",
         "symfony/dependency-injection": "^2.8|^3.0"
@@ -18,7 +18,7 @@
     "require-dev": {
         "friends-of-behat/test-context": "^0.3",
         "friends-of-behat/cross-container-extension": "^0.1.3",
-        "phpspec/phpspec": "^3.1"
+        "phpspec/phpspec": "^4.0@alpha"
     },
     "suggest": {
         "friends-of-behat/cross-container-extension": "^0.1",
@@ -27,5 +27,8 @@
     },
     "autoload": {
         "psr-4": { "FriendsOfBehat\\ContextServiceExtension\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4" : { "spec\\FriendsOfBehat\\ContextServiceExtension\\": "spec/" }
     }
 }

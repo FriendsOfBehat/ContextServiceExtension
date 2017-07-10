@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ContextServiceExtension package.
  *
@@ -40,7 +42,7 @@ final class ContextServiceExtension implements Extension
     /**
      * {@inheritdoc}
      */
-    public function getConfigKey()
+    public function getConfigKey(): string
     {
         return 'fob_context_service';
     }
@@ -48,7 +50,7 @@ final class ContextServiceExtension implements Extension
     /**
      * {@inheritdoc}
      */
-    public function initialize(ExtensionManager $extensionManager)
+    public function initialize(ExtensionManager $extensionManager): void
     {
         /** @var CrossContainerExtension|null $crossContainerExtension */
         $crossContainerExtension = $extensionManager->getExtension('fob_cross_container');
@@ -60,7 +62,7 @@ final class ContextServiceExtension implements Extension
     /**
      * {@inheritdoc}
      */
-    public function configure(ArrayNodeDefinition $builder)
+    public function configure(ArrayNodeDefinition $builder): void
     {
         $builder
             ->children()
@@ -73,7 +75,7 @@ final class ContextServiceExtension implements Extension
     /**
      * {@inheritdoc}
      */
-    public function load(ContainerBuilder $container, array $config)
+    public function load(ContainerBuilder $container, array $config): void
     {
         $this->loadContextRegistry($container);
         $this->loadScenarioServiceContainer($container, $config);
@@ -83,7 +85,7 @@ final class ContextServiceExtension implements Extension
     /**
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         /** @var ContainerBuilder $scenarioContainer */
         $scenarioContainer = $container->get('fob_context_service.service_container.scenario');
@@ -99,7 +101,7 @@ final class ContextServiceExtension implements Extension
     /**
      * @param ContainerBuilder $container
      */
-    private function loadContextRegistry(ContainerBuilder $container)
+    private function loadContextRegistry(ContainerBuilder $container): void
     {
         $container->setDefinition('fob_context_service.context_registry', (new Definition(ContextRegistry::class))->setPublic(false));
     }
@@ -108,13 +110,12 @@ final class ContextServiceExtension implements Extension
      * @param ContainerBuilder $container
      * @param array $config
      */
-    private function loadScenarioServiceContainer(ContainerBuilder $container, array $config)
+    private function loadScenarioServiceContainer(ContainerBuilder $container, array $config): void
     {
         $container->set(
             'fob_context_service.service_container.scenario',
             (new ContainerFactory())->createContainer($container->getParameter('paths.base'), $config['imports'])
         );
-
 
         $definition = new Definition(ScenarioContainerResetter::class, [
             new Reference('fob_context_service.service_container.scenario'),
@@ -126,7 +127,7 @@ final class ContextServiceExtension implements Extension
     /**
      * @param ContainerBuilder $container
      */
-    private function loadEnvironmentHandler(ContainerBuilder $container)
+    private function loadEnvironmentHandler(ContainerBuilder $container): void
     {
         $definition = new Definition(ContextServiceEnvironmentHandler::class, [
             new Reference('fob_context_service.service_container.scenario'),

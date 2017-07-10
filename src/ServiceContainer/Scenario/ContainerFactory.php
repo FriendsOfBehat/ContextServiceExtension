@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ContextServiceExtension package.
  *
@@ -15,6 +17,7 @@ use ProxyManager\Configuration as ProxyManagerConfiguration;
 use Symfony\Bridge\ProxyManager\LazyProxy\Instantiator\RuntimeInstantiator;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
@@ -30,7 +33,7 @@ final class ContainerFactory
      *
      * @return ContainerBuilder
      */
-    public function createContainer($basePath, array $importedFiles = [])
+    public function createContainer(string $basePath, array $importedFiles = []): ContainerBuilder
     {
         $container = new ContainerBuilder();
 
@@ -48,9 +51,9 @@ final class ContainerFactory
      * @param ContainerBuilder $container
      * @param string $basePath
      *
-     * @return DelegatingLoader
+     * @return LoaderInterface
      */
-    private function createLoader(ContainerBuilder $container, $basePath)
+    private function createLoader(ContainerBuilder $container, string $basePath): LoaderInterface
     {
         $fileLocator = new FileLocator($basePath);
         $loader = new DelegatingLoader(new LoaderResolver([
@@ -65,7 +68,7 @@ final class ContainerFactory
     /**
      * @param ContainerBuilder $container
      */
-    private function enableSupportForLazyServicesIfPossible(ContainerBuilder $container)
+    private function enableSupportForLazyServicesIfPossible(ContainerBuilder $container): void
     {
         if (class_exists(ProxyManagerConfiguration::class) && class_exists(RuntimeInstantiator::class)) {
             $container->setProxyInstantiator(new RuntimeInstantiator());

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ContextServiceExtension package.
  *
@@ -37,7 +39,7 @@ final class ScenarioContainerResetter implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             ScenarioTested::AFTER => ['reset', -15],
@@ -45,7 +47,7 @@ final class ScenarioContainerResetter implements EventSubscriberInterface
         ];
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->scenarioContainer->reset();
     }

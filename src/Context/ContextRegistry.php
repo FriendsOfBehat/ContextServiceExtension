@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ContextServiceExtension package.
  *
@@ -17,7 +19,7 @@ namespace FriendsOfBehat\ContextServiceExtension\Context;
 final class ContextRegistry
 {
     /**
-     * @var array
+     * @var string[]
      */
     private $registry;
 
@@ -25,7 +27,7 @@ final class ContextRegistry
      * @param string $serviceId
      * @param string $serviceClass
      */
-    public function add($serviceId, $serviceClass)
+    public function add(string $serviceId, string $serviceClass): void
     {
         $this->registry[$serviceId] = $serviceClass;
     }
@@ -37,7 +39,7 @@ final class ContextRegistry
      *
      * @throws \InvalidArgumentException
      */
-    public function getClass($serviceId)
+    public function getClass(string $serviceId): string
     {
         if (!isset($this->registry[$serviceId])) {
             throw new \InvalidArgumentException(sprintf(

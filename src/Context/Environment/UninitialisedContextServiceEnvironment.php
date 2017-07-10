@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ContextServiceExtension package.
  *
@@ -22,7 +24,7 @@ use FriendsOfBehat\ContextServiceExtension\Context\Environment\Handler\ContextSe
 final class UninitialisedContextServiceEnvironment extends StaticEnvironment implements ContextServiceEnvironment
 {
     /**
-     * @var array
+     * @var string[]
      */
     private $contextServices = [];
 
@@ -30,7 +32,7 @@ final class UninitialisedContextServiceEnvironment extends StaticEnvironment imp
      * @param string $serviceId
      * @param string $serviceClass
      */
-    public function registerContextService($serviceId, $serviceClass)
+    public function registerContextService(string $serviceId, string $serviceClass): void
     {
         $this->contextServices[$serviceId] = $serviceClass;
     }
@@ -38,7 +40,7 @@ final class UninitialisedContextServiceEnvironment extends StaticEnvironment imp
     /**
      * @return array
      */
-    public function getContextServices()
+    public function getContextServices(): array
     {
         return array_keys($this->contextServices);
     }
@@ -46,7 +48,7 @@ final class UninitialisedContextServiceEnvironment extends StaticEnvironment imp
     /**
      * {@inheritdoc}
      */
-    public function hasContexts()
+    public function hasContexts(): bool
     {
         return count($this->contextServices) > 0;
     }
@@ -54,7 +56,7 @@ final class UninitialisedContextServiceEnvironment extends StaticEnvironment imp
     /**
      * {@inheritdoc}
      */
-    public function getContextClasses()
+    public function getContextClasses(): array
     {
         return array_values($this->contextServices);
     }
@@ -62,7 +64,7 @@ final class UninitialisedContextServiceEnvironment extends StaticEnvironment imp
     /**
      * {@inheritdoc}
      */
-    public function hasContextClass($class)
+    public function hasContextClass($class): bool
     {
         return in_array($class, $this->contextServices, true);
     }
