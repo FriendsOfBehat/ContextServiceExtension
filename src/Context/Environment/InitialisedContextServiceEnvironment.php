@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ContextServiceExtension package.
  *
@@ -45,7 +47,7 @@ final class InitialisedContextServiceEnvironment implements ContextServiceEnviro
     /**
      * @param Context $context
      */
-    public function registerContext(Context $context)
+    public function registerContext(Context $context): void
     {
         $this->contexts[get_class($context)] = $context;
     }
@@ -53,7 +55,7 @@ final class InitialisedContextServiceEnvironment implements ContextServiceEnviro
     /**
      * {@inheritdoc}
      */
-    public function getSuite()
+    public function getSuite(): Suite
     {
         return $this->suite;
     }
@@ -61,7 +63,7 @@ final class InitialisedContextServiceEnvironment implements ContextServiceEnviro
     /**
      * {@inheritdoc}
      */
-    public function bindCallee(Callee $callee)
+    public function bindCallee(Callee $callee): callable
     {
         $callable = $callee->getCallable();
 
@@ -75,7 +77,7 @@ final class InitialisedContextServiceEnvironment implements ContextServiceEnviro
     /**
      * {@inheritdoc}
      */
-    public function hasContexts()
+    public function hasContexts(): bool
     {
         return count($this->contexts) > 0;
     }
@@ -83,7 +85,7 @@ final class InitialisedContextServiceEnvironment implements ContextServiceEnviro
     /**
      * {@inheritdoc}
      */
-    public function getContextClasses()
+    public function getContextClasses(): array
     {
         return array_keys($this->contexts);
     }
@@ -91,7 +93,7 @@ final class InitialisedContextServiceEnvironment implements ContextServiceEnviro
     /**
      * {@inheritdoc}
      */
-    public function hasContextClass($class)
+    public function hasContextClass($class): bool
     {
         return isset($this->contexts[$class]);
     }
@@ -103,7 +105,7 @@ final class InitialisedContextServiceEnvironment implements ContextServiceEnviro
      *
      * @throws ContextNotFoundException
      */
-    private function getContext($class)
+    private function getContext(string $class): Context
     {
         if (!isset($this->contexts[$class])) {
             throw new ContextNotFoundException(sprintf(

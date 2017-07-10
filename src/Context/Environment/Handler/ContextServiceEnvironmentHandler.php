@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ContextServiceExtension package.
  *
@@ -50,7 +52,7 @@ final class ContextServiceEnvironmentHandler implements EnvironmentHandler
     /**
      * {@inheritdoc}
      */
-    public function supportsSuite(Suite $suite)
+    public function supportsSuite(Suite $suite): bool
     {
         return $suite->hasSetting('contexts_services');
     }
@@ -58,7 +60,7 @@ final class ContextServiceEnvironmentHandler implements EnvironmentHandler
     /**
      * {@inheritdoc}
      */
-    public function buildEnvironment(Suite $suite)
+    public function buildEnvironment(Suite $suite): Environment
     {
         $environment = new UninitialisedContextServiceEnvironment($suite);
         foreach ($this->getSuiteContextsServices($suite) as $serviceId) {
@@ -71,7 +73,7 @@ final class ContextServiceEnvironmentHandler implements EnvironmentHandler
     /**
      * {@inheritdoc}
      */
-    public function supportsEnvironmentAndSubject(Environment $environment, $testSubject = null)
+    public function supportsEnvironmentAndSubject(Environment $environment, $testSubject = null): bool
     {
         return $environment instanceof UninitialisedContextServiceEnvironment;
     }
@@ -81,7 +83,7 @@ final class ContextServiceEnvironmentHandler implements EnvironmentHandler
      *
      * @throws EnvironmentIsolationException
      */
-    public function isolateEnvironment(Environment $uninitializedEnvironment, $testSubject = null)
+    public function isolateEnvironment(Environment $uninitializedEnvironment, $testSubject = null): Environment
     {
         /** @var UninitialisedContextServiceEnvironment $uninitializedEnvironment */
         $this->assertEnvironmentCanBeIsolated($uninitializedEnvironment, $testSubject);
@@ -103,7 +105,7 @@ final class ContextServiceEnvironmentHandler implements EnvironmentHandler
      *
      * @throws SuiteConfigurationException If "contexts_services" setting is not an array
      */
-    private function getSuiteContextsServices(Suite $suite)
+    private function getSuiteContextsServices(Suite $suite): array
     {
         $contextsServices = $suite->getSetting('contexts_services');
 
@@ -124,7 +126,7 @@ final class ContextServiceEnvironmentHandler implements EnvironmentHandler
      *
      * @throws EnvironmentIsolationException
      */
-    private function assertEnvironmentCanBeIsolated(Environment $uninitializedEnvironment, $testSubject)
+    private function assertEnvironmentCanBeIsolated(Environment $uninitializedEnvironment, $testSubject): void
     {
         if (!$this->supportsEnvironmentAndSubject($uninitializedEnvironment, $testSubject)) {
             throw new EnvironmentIsolationException(sprintf(
