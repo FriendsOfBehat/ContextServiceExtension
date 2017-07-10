@@ -27,5 +27,8 @@
     },
     "autoload": {
         "psr-4": { "FriendsOfBehat\\ContextServiceExtension\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4" : { "spec\\FriendsOfBehat\\ContextServiceExtension\\": "spec/" }
     }
 }
