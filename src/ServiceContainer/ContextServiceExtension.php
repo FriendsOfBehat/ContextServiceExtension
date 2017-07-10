@@ -68,7 +68,9 @@ final class ContextServiceExtension implements Extension
             ->children()
                 ->arrayNode('imports')
                     ->performNoDeepMerging()
-                    ->prototype('scalar')
+                    ->prototype('scalar')->end()
+                ->end()
+            ->end()
         ;
     }
 
