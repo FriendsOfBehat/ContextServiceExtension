@@ -96,6 +96,13 @@ final class ContextServiceExtension implements Extension
             $this->crossContainerProcessor->process($scenarioContainer);
         }
 
+        // This feature was introduced only in symfony/dependency-injection v3.3
+        // So we are adding the feature for modern containers and leaving as-is for older ones
+        if (method_exists($scenarioContainer, 'registerForAutoconfiguration')) {
+            $scenarioContainer->registerForAutoconfiguration(\Behat\Behat\Context\Context::class)
+                ->addTag(ContextRegistryPass::CONTEXT_SERVICE_TAG);
+        }
+
         $scenarioContainer->addCompilerPass(new ContextRegistryPass($container->getDefinition('fob_context_service.context_registry')));
         $scenarioContainer->compile();
     }

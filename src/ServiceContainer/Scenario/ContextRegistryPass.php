@@ -22,6 +22,8 @@ use Symfony\Component\DependencyInjection\Definition;
  */
 final class ContextRegistryPass implements CompilerPassInterface
 {
+    const CONTEXT_SERVICE_TAG = 'fob.context_service';
+
     /**
      * @var Definition
      */
@@ -40,7 +42,7 @@ final class ContextRegistryPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        $taggedServices = $container->findTaggedServiceIds('fob.context_service');
+        $taggedServices = $container->findTaggedServiceIds(self::CONTEXT_SERVICE_TAG);
 
         foreach ($taggedServices as $id => $tags) {
             $this->contextRegistryDefinition->addMethodCall(
