@@ -83,7 +83,6 @@ final class ContextServiceExtension implements Extension
         $this->loadContextRegistry($container);
         $this->loadScenarioServiceContainer($container, $config);
         $this->loadEnvironmentHandler($container);
-        $this->loadContextInitializers($container);
     }
 
     /**
@@ -146,20 +145,10 @@ final class ContextServiceExtension implements Extension
         ]);
         $definition->addTag(EnvironmentExtension::HANDLER_TAG, ['priority' => 128]);
 
-        $container->setDefinition('fob_context_service.environment_handler.context_service', $definition);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     */
-    private function loadContextInitializers(ContainerBuilder $container)
-    {
-        $references = $container->findTaggedServiceIds(ContextExtension::INITIALIZER_TAG);
-
-        $definition = $container->getDefinition('fob_context_service.environment_handler.context_service');
-
-        foreach ($references as $serviceId => $tags) {
+        foreach ($container->findTaggedServiceIds(ContextExtension::INITIALIZER_TAG) as $serviceId => $tags) {
             $definition->addMethodCall('registerContextInitializer', [$container->getDefinition($serviceId)]);
         }
+
+        $container->setDefinition('fob_context_service.environment_handler.context_service', $definition);
     }
 }
