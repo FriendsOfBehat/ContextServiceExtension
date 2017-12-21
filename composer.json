@@ -23,7 +23,7 @@
     },
     "suggest": {
         "friends-of-behat/cross-container-extension": "^1.0",
-        "ocramius/proxy-manager": "^1.0|^2.0",
+        "ocramius/proxy-manager": "^2.0",
         "symfony/proxy-manager-bridge": "^3.0"
     },
     "autoload": {
