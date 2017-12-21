@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace FriendsOfBehat\ContextServiceExtension\Context\Environment\Handler;
 
 use Behat\Behat\Context\Context;
+use Behat\Behat\Context\Initializer\ContextInitializer;
 use Behat\Testwork\Environment\Environment;
 use Behat\Testwork\Environment\Exception\EnvironmentIsolationException;
 use Behat\Testwork\Environment\Handler\EnvironmentHandler;
@@ -38,6 +39,11 @@ final class ContextServiceEnvironmentHandler implements EnvironmentHandler
      * @var ContextRegistry
      */
     private $contextRegistry;
+
+    /**
+     * @var ContextInitializer[]
+     */
+    private $contextInitializers;
 
     /**
      * @param ContainerInterface $container
@@ -92,6 +98,7 @@ final class ContextServiceEnvironmentHandler implements EnvironmentHandler
         foreach ($uninitializedEnvironment->getContextServices() as $serviceId) {
             /** @var Context $context */
             $context = $this->container->get($serviceId);
+            $this->initializeInstance($context);
             $environment->registerContext($context);
         }
 
@@ -136,4 +143,27 @@ final class ContextServiceEnvironmentHandler implements EnvironmentHandler
             ), $uninitializedEnvironment);
         }
     }
+
+    /**
+     * Initializes context class and returns new context instance.
+     *
+     * @param Context $context
+     */
+    private function initializeInstance(Context $context)
+    {
+        foreach ($this->contextInitializers as $initializer) {
+            $initializer->initializeContext($context);
+        }
+    }
+
+    /**
+     * Registers context initializer.
+     *
+     * @param ContextInitializer $initializer
+     */
+    public function registerContextInitializer(ContextInitializer $initializer)
+    {
+        $this->contextInitializers[] = $initializer;
+    }
+
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace FriendsOfBehat\ContextServiceExtension\ServiceContainer;
 
+use Behat\Behat\Context\ServiceContainer\ContextExtension;
 use Behat\Testwork\Environment\ServiceContainer\EnvironmentExtension;
 use Behat\Testwork\EventDispatcher\ServiceContainer\EventDispatcherExtension;
 use Behat\Testwork\ServiceContainer\Extension;
@@ -82,6 +83,7 @@ final class ContextServiceExtension implements Extension
         $this->loadContextRegistry($container);
         $this->loadScenarioServiceContainer($container, $config);
         $this->loadEnvironmentHandler($container);
+        $this->loadContextInitializers($container);
     }
 
     /**
@@ -138,5 +140,19 @@ final class ContextServiceExtension implements Extension
         $definition->addTag(EnvironmentExtension::HANDLER_TAG, ['priority' => 128]);
 
         $container->setDefinition('fob_context_service.environment_handler.context_service', $definition);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function loadContextInitializers(ContainerBuilder $container)
+    {
+        $references = $container->findTaggedServiceIds(ContextExtension::INITIALIZER_TAG);
+
+        $definition = $container->getDefinition('fob_context_service.environment_handler.context_service');
+
+        foreach ($references as $serviceId => $tags) {
+            $definition->addMethodCall('registerContextInitializer', [$container->getDefinition($serviceId)]);
+        }
     }
 }
