@@ -55,7 +55,7 @@ final class ContextServiceExtension implements Extension
     {
         /** @var CrossContainerExtension|null $crossContainerExtension */
         $crossContainerExtension = $extensionManager->getExtension('fob_cross_container');
-        if (null !== $crossContainerExtension) {
+        if ($crossContainerExtension !== null) {
             $this->crossContainerProcessor = $crossContainerExtension->getCrossContainerProcessor();
         }
     }
@@ -83,7 +83,6 @@ final class ContextServiceExtension implements Extension
         $this->loadContextRegistry($container);
         $this->loadScenarioServiceContainer($container, $config);
         $this->loadEnvironmentHandler($container);
-        $this->loadContextInitializers($container);
     }
 
     /**
@@ -94,15 +93,17 @@ final class ContextServiceExtension implements Extension
         /** @var ContainerBuilder $scenarioContainer */
         $scenarioContainer = $container->get('fob_context_service.service_container.scenario');
 
-        if (null !== $this->crossContainerProcessor) {
+        if ($this->crossContainerProcessor !== null) {
             $this->crossContainerProcessor->process($scenarioContainer);
         }
 
         // This feature was introduced only in symfony/dependency-injection v3.3
         // So we are adding the feature for modern containers and leaving as-is for older ones
         if (method_exists($scenarioContainer, 'registerForAutoconfiguration')) {
-            $scenarioContainer->registerForAutoconfiguration(\Behat\Behat\Context\Context::class)
-                ->addTag(ContextRegistryPass::CONTEXT_SERVICE_TAG);
+            $scenarioContainer
+                ->registerForAutoconfiguration(\Behat\Behat\Context\Context::class)
+                ->addTag(ContextRegistryPass::CONTEXT_SERVICE_TAG)
+            ;
         }
 
         $scenarioContainer->addCompilerPass(new ContextRegistryPass($container->getDefinition('fob_context_service.context_registry')));
@@ -146,20 +147,10 @@ final class ContextServiceExtension implements Extension
         ]);
         $definition->addTag(EnvironmentExtension::HANDLER_TAG, ['priority' => 128]);
 
-        $container->setDefinition('fob_context_service.environment_handler.context_service', $definition);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     */
-    private function loadContextInitializers(ContainerBuilder $container)
-    {
-        $references = $container->findTaggedServiceIds(ContextExtension::INITIALIZER_TAG);
-
-        $definition = $container->getDefinition('fob_context_service.environment_handler.context_service');
-
-        foreach ($references as $serviceId => $tags) {
+        foreach ($container->findTaggedServiceIds(ContextExtension::INITIALIZER_TAG) as $serviceId => $tags) {
             $definition->addMethodCall('registerContextInitializer', [$container->getDefinition($serviceId)]);
         }
+
+        $container->setDefinition('fob_context_service.environment_handler.context_service', $definition);
     }
 }

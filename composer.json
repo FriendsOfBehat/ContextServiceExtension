@@ -13,17 +13,18 @@
         "php": "^7.1",
 
         "behat/behat": "^3.1",
-        "symfony/dependency-injection": "^2.8|^3.0"
+        "symfony/dependency-injection": "^3.0"
     },
     "require-dev": {
-        "friends-of-behat/test-context": "^1.0",
         "friends-of-behat/cross-container-extension": "^1.0",
-        "phpspec/phpspec": "^4.0@alpha"
+        "friends-of-behat/test-context": "^1.0",
+        "phpspec/phpspec": "^4.0",
+        "sylius-labs/coding-standard": "^1.0"
     },
     "suggest": {
         "friends-of-behat/cross-container-extension": "^1.0",
-        "ocramius/proxy-manager": "^1.0|^2.0",
-        "symfony/proxy-manager-bridge": "^2.8|^3.0"
+        "ocramius/proxy-manager": "^2.0",
+        "symfony/proxy-manager-bridge": "^3.0"
     },
     "autoload": {
         "psr-4": { "FriendsOfBehat\\ContextServiceExtension\\": "src/" }

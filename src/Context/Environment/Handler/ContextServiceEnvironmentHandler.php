@@ -165,5 +165,4 @@ final class ContextServiceEnvironmentHandler implements EnvironmentHandler
     {
         $this->contextInitializers[] = $initializer;
     }
-
 }

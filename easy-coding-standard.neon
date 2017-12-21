@@ -1,0 +1,9 @@
+includes:
+    - vendor/sylius-labs/coding-standard/easy-coding-standard.neon
+
+checkers:
+    PhpCsFixer\Fixer\ControlStructure\YodaStyleFixer:
+        equal: false
+        identical: false
+        less_and_greater: false
+    SlevomatCodingStandard\Sniffs\Classes\UnusedPrivateElementsSniff: {}
