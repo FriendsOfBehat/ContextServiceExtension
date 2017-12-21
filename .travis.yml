@@ -22,5 +22,7 @@ install:
 script:
     - composer validate --strict
 
+    - vendor/bin/ecs check src spec
+
     - vendor/bin/phpspec run --format dot -vvv --no-interaction
     - vendor/bin/behat --strict -vvv --no-interaction
