@@ -43,7 +43,7 @@ final class ContextServiceEnvironmentHandler implements EnvironmentHandler
     /**
      * @var ContextInitializer[]
      */
-    private $contextInitializers;
+    private $contextInitializers = [];
 
     /**
      * @param ContainerInterface $container
