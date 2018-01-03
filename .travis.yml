@@ -4,6 +4,11 @@ php:
     - 7.1
     - 7.2
 
+env:
+    matrix:
+        - PREFER_LOWEST="--prefer-lowest"
+        - PREFER_LOWEST=""
+
 cache:
     directories:
         - vendor
@@ -12,12 +17,18 @@ before_install:
     - phpenv config-rm xdebug.ini || true
 
 install:
-    - composer update --prefer-dist
+    - composer update --prefer-dist $PREFER_LOWEST
 
 script:
     - composer validate --strict
 
-    - vendor/bin/ecs check src spec
-
     - vendor/bin/phpspec run --format dot -vvv --no-interaction
     - vendor/bin/behat --strict -vvv --no-interaction
+
+jobs:
+    include:
+        -   stage: Code Standard Checker
+            php: 7.1
+
+            script:
+                - vendor/bin/ecs check src spec
