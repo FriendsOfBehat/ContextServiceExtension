@@ -45,6 +45,8 @@ final class ContextRegistryPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds(self::CONTEXT_SERVICE_TAG);
 
         foreach ($taggedServices as $id => $tags) {
+            $container->getDefinition($id)->setPublic(true);
+
             $this->contextRegistryDefinition->addMethodCall(
                 'add',
                 [$id, $container->findDefinition($id)->getClass()]
