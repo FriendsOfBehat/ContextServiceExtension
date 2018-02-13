@@ -5,19 +5,21 @@ php:
     - 7.2
 
 env:
-    matrix:
-        - PREFER_LOWEST="--prefer-lowest"
-        - PREFER_LOWEST=""
+    - SYMFONY_VERSION=3.2.*
+    - SYMFONY_VERSION=3.3.*
+    - SYMFONY_VERSION=3.4.*
+    - SYMFONY_VERSION=4.0.*
 
 cache:
     directories:
-        - vendor
+        - ~/.composer/cache/files
 
 before_install:
     - phpenv config-rm xdebug.ini || true
 
 install:
-    - composer update --prefer-dist $PREFER_LOWEST
+    - composer require symfony/dependency-injection:${SYMFONY_VERSION} --no-update --no-scripts --prefer-dist
+    - composer update --prefer-dist
 
 script:
     - composer validate --strict
