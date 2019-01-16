@@ -41,7 +41,8 @@ final class ContainerFactory
 
         $loader = $this->createLoader($container, $basePath);
         foreach ($importedFiles as $file) {
-            $loader->load($file);
+            $type = false !== mb_strpos($file, '*') ? 'glob' : null;
+            $loader->load($file, $type);
         }
 
         return $container;
@@ -60,6 +61,7 @@ final class ContainerFactory
             new Loader\XmlFileLoader($container, $fileLocator),
             new Loader\YamlFileLoader($container, $fileLocator),
             new Loader\PhpFileLoader($container, $fileLocator),
+            new Loader\GlobFileLoader($container, $fileLocator)
         ]));
 
         return $loader;
