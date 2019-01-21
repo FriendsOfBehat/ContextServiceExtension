@@ -1,5 +1,7 @@
 # Context Service Extension [![License](https://img.shields.io/packagist/l/friends-of-behat/context-service-extension.svg)](https://packagist.org/packages/friends-of-behat/context-service-extension) [![Version](https://img.shields.io/packagist/v/friends-of-behat/context-service-extension.svg)](https://packagist.org/packages/friends-of-behat/context-service-extension) [![Build status on Linux](https://img.shields.io/travis/FriendsOfBehat/ContextServiceExtension/master.svg)](http://travis-ci.org/FriendsOfBehat/ContextServiceExtension) [![Scrutinizer Quality Score](https://img.shields.io/scrutinizer/g/FriendsOfBehat/ContextServiceExtension.svg)](https://scrutinizer-ci.com/g/FriendsOfBehat/ContextServiceExtension/)
 
+#### This library is deprecated! It will not be supported anymore - if you're using it with CrossContainerExtension v1 and SymfonyExtension v1, please consider an upgrade to [SymfonyExtension v2](https://github.com/FriendsOfBehat/SymfonyExtension).
+
 Allows to declare and use contexts services in scenario scoped container.
 
 ## Usage
